@@ -10,11 +10,7 @@ const port = process.env.PORT || 5000;
 app.use(cors())
 app.use(express.json())
 
-// j0cmouPPW3Evuh6k
-// shipSwiftly
-
-
-const uri = "mongodb+srv://shipSwiftly:j0cmouPPW3Evuh6k@cluster0.cpvrkgd.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.cpvrkgd.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -27,7 +23,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    // Connect the client to server	(optional starting in v4.7)
     // await client.connect();
     const shippingCollection = client.db('shipping-details').collection('shipping')
 
@@ -38,7 +34,8 @@ async function run() {
     })
 
     app.get('/shippings', async(req, res)=>{
-      const result = await shippingCollection.find().toArray()
+      const query = req.query
+      const result = await shippingCollection.find(query).toArray()
       res.send(result)
     })
 
